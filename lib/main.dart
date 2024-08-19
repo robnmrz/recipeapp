@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/pages/account_page.dart';
-import 'package:recipe_app/pages/login_page.dart';
+import 'package:recipe_app/pages/app_page.dart';
+import 'package:recipe_app/pages/home.dart';
+import 'package:recipe_app/pages/signin.dart';
+import 'package:recipe_app/pages/signup.dart';
 import 'package:recipe_app/secrets.dart';
+import 'package:recipe_app/utils/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Supabase.initialize(
     url: supaBaseUrl,
     anonKey: supaBaseKey,
@@ -38,22 +43,29 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: supabase.auth.currentSession == null
-          ? const LoginPage()
-          : const AccountPage(),
+      initialRoute: client.auth.currentSession != null ? 'appapge' : '/',
+      routes: {
+        '/': (context) => const HomePage(),
+        '/signup': (context) => const SignUp(),
+        '/signin': (context) => const SignIn(),
+        '/apppage': (context) => const AppPage(),
+      },
+      // home: supabase.auth.currentSession == null
+      //     ? const LoginPage()
+      //     : const AccountPage(),
     );
   }
 }
 
-extension ContextExtension on BuildContext {
-  void showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError
-            ? Theme.of(this).colorScheme.error
-            : Theme.of(this).snackBarTheme.backgroundColor,
-      ),
-    );
-  }
-}
+// extension ContextExtension on BuildContext {
+//   void showSnackBar(String message, {bool isError = false}) {
+//     ScaffoldMessenger.of(this).showSnackBar(
+//       SnackBar(
+//         content: Text(message),
+//         backgroundColor: isError
+//             ? Theme.of(this).colorScheme.error
+//             : Theme.of(this).snackBarTheme.backgroundColor,
+//       ),
+//     );
+//   }
+// }
